@@ -1,0 +1,12 @@
+models/
+mysql/data/
+node_modules/
+target/
+*.log
+.DS_Store
+models/
+mysql/data/
+node_modules/
+target/
+*.log
+.DS_Store
