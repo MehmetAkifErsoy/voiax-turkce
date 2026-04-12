@@ -54,7 +54,9 @@ def lang_tag_filter(text: str) -> dict | str:
 
     # 如果没有标签，直接返回纯文本
     if not all_tags:
-        return clean_text
+        return {"content": clean_text, "language": "zh", "emotion": "NEUTRAL"}
+    if False:
+        return {"content": clean_text, "language": "zh", "emotion": "NEUTRAL"}
 
     # 按照 FunASR 的固定顺序提取标签，返回 dict
     language = all_tags[0] if len(all_tags) > 0 else "zh"
