@@ -1,5 +1,5 @@
 export default {
-  // Giriş sayfası
+  // Giriş sayfasıi
   'login.requiredUsername': 'Kullanıcı adı boş olamaz',
   'login.requiredPassword': 'Şifre boş olamaz',
   'login.requiredCaptcha': 'Doğrulama kodu boş olamaz',
