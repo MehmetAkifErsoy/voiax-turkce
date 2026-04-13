@@ -54,6 +54,9 @@
                 <el-dropdown-item @click.native="changeLanguage('pt_BR')">
                   {{ $t("language.ptBR") }}
                 </el-dropdown-item>
+                <el-dropdown-item @click.native="changeLanguage('tr')">
+                  {{ $t("language.tr") }}
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -189,6 +192,8 @@ export default {
           return this.$t("language.vi");
         case "pt_BR":
           return this.$t("language.ptBR");
+        case "tr":
+          return this.$t("language.tr");
         default:
           return this.$t("language.zhCN");
       }
@@ -207,6 +212,8 @@ export default {
           return require("@/assets/xiaozhi-ai_de.png");
         case "vi":
           return require("@/assets/xiaozhi-ai_vi.png");
+        case "tr":
+          return require("@/assets/xiaozhi-ai_en.png");
         default:
           return require("@/assets/xiaozhi-ai.png");
       }
