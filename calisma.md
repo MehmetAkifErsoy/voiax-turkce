@@ -78,7 +78,7 @@ Değiştirilecek bağlamlar:
 ## ADIM ADIM ÇALIŞMA PLANI
 
 ### ADIM 1: docker-compose_all.yml Düzenleme
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/docker-compose_all.yml`
 
 Yapılacaklar:
@@ -90,7 +90,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 2: config.yaml Ana Yapılandırma
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/config.yaml`
 
 Yapılacaklar:
@@ -106,7 +106,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 3: Sistem Prompt (Karakter) Türkçeleştirme
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı (ADIM 2 ile birlikte yapıldı)  
 **Dosya:** `main/xiaozhi-server/config.yaml` (prompt bölümü)
 
 Yapılacaklar:
@@ -118,7 +118,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 4: agent-base-prompt.txt Şablon Türkçeleştirme
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/agent-base-prompt.txt`
 
 Yapılacaklar:
@@ -138,26 +138,14 @@ Yapılacaklar:
 ---
 
 ### ADIM 5: Web Panel (manager-web) Türkçe Dil Desteği
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosyalar:** `main/manager-web/src/i18n/`
 
-**Mevcut diller:** zh_CN, zh_TW, en, de, vi, pt_BR (7 dil dosyası)  
-**Eksik:** Türkçe (tr.js)
-
-**NOT:** `en.js` dosyasında bazı key'ler zaten yarım Türkçeye çevrilmiş ama bozuk durumda:
-- `'header.smartManagement': 'Yapay Zeka Birimis'` (yazım hatalı)
-- `'header.Yapay Zeka BirimiTemplate'` (key adına Türkçe yazılmış, yanlış)
-- `'header.Hizmet SağlayıcıManagement'` (key adına Türkçe yazılmış, yanlış)
-- Bu bozuk key'ler düzeltilecek
-
-Yapılacaklar:
-- [ ] `tr.js` dosyası oluştur (~1347 satır, en.js baz alınarak tam Türkçe çeviri)
-- [ ] `index.js`'e Türkçe dil kaydı ekle:
-  - `import tr from './tr';` 
-  - `getDefaultLanguage()` fonksiyonuna `if (browserLang.indexOf('tr') === 0) return 'tr';`
-  - `messages` objesine `'tr': tr` ekle
-- [ ] `en.js`'deki bozuk Türkçe key'leri İngilizceye geri çevir
-- [ ] Varsayılan dili `tr` yap veya browser'dan otomatik algılansın
+**Yapılanlar:**
+- [x] `tr.js` dosyası oluşturuldu (~1350 satır, tam Türkçe çeviri)
+- [x] `index.js`'e Türkçe dil kaydı eklendi (import, browser detection, messages)
+- [x] `en.js`'e `language.tr: 'Türkçe'` eklendi
+- **NOT:** en.js'deki bozuk key adları (Yapay Zeka Birimi, Hizmet Sağlayıcı, Kontrol Merkezi vb.) Vue bileşen bağımlılığı nedeniyle aynı bırakıldı. tr.js'de aynı key'ler kullanıldı.
 
 **Çevrilecek ana bölümler (~1347 satır):**
 | Bölüm | Satır Sayısı (yaklaşık) |
@@ -181,7 +169,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 6: Plugin Açıklamalarını Türkçeleştirme
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosyalar:** `main/xiaozhi-server/plugins_func/functions/` altındaki tüm dosyalar
 
 Yapılacaklar:
@@ -196,7 +184,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 7: Gemini LLM Provider Patch (Bilinen Bug Düzeltmeleri)
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/core/providers/llm/gemini/gemini.py`
 
 Yapılacaklar:
@@ -208,7 +196,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 8: LLM Factory Patch (OpenAI Uyumluluğu)
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/core/utils/llm.py`
 
 Yapılacaklar:
@@ -219,7 +207,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 9: data/.config.yaml Oluşturma (Sunucu Çalışma Config)
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/data/.config.yaml` (oluşturulacak)
 
 **Karar:** ✅ **Web Panel modu (B)** seçildi
@@ -232,7 +220,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 10: Prompt Manager Türkçe Desteği
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/core/utils/prompt_manager.py`
 
 Yapılacaklar:
@@ -252,7 +240,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 11: connection.py Tool Calling Rules Türkçeleştirme
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı  
 **Dosya:** `main/xiaozhi-server/core/connection.py`
 
 Yapılacaklar:
@@ -263,7 +251,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 12: TTS Dil Ayarı
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı (ADIM 2 ile birlikte - EdgeTTS tr-TR-EmelNeural)  
 **Config ayarı (config.yaml veya web panel)**
 
 Yapılacaklar:
@@ -274,7 +262,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 13: ASR (Konuşma Tanıma) Ayarı  
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı (ADIM 2 ile birlikte - GroqASR whisper-large-v3-turbo)  
 **Config ayarı**
 
 Yapılacaklar:
@@ -285,7 +273,7 @@ Yapılacaklar:
 ---
 
 ### ADIM 14: LLM (Dil Modeli) Ayarı
-**Durum:** ⬜ Bekliyor  
+**Durum:** ✅ Tamamlandı (ADIM 2 ile birlikte - GroqLLM llama-3.3-70b-versatile)  
 **Config ayarı**
 
 Yapılacaklar:

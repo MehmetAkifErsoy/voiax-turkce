@@ -6,6 +6,7 @@ import en from './en';
 import de from './de';
 import vi from './vi';
 import ptBR from './pt_BR';
+import tr from './tr';
 
 Vue.use(VueI18n);
 
@@ -31,6 +32,9 @@ const getDefaultLanguage = () => {
   if (browserLang === 'pt-BR' || browserLang === 'pt') {
     return 'pt_BR';
   }
+  if (browserLang.indexOf('tr') === 0) {
+    return 'tr';
+  }
   return 'en';
 };
 
@@ -43,7 +47,8 @@ const i18n = new VueI18n({
     'en': en,
     'de': de,
     'vi': vi,
-    'pt_BR': ptBR
+    'pt_BR': ptBR,
+    'tr': tr
   }
 });
 

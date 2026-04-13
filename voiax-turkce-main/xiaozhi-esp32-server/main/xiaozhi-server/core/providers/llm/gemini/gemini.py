@@ -102,6 +102,22 @@ class LLMProvider(LLMProviderBase):
         )
 
     @staticmethod
+    def _clean_schema(schema):
+        """Remove unsupported keys from function parameter schemas for Gemini API."""
+        if not isinstance(schema, dict):
+            return schema
+        unsupported = {"minimum", "maximum", "default", "additionalProperties"}
+        cleaned = {k: v for k, v in schema.items() if k not in unsupported}
+        if "properties" in cleaned:
+            cleaned["properties"] = {
+                pk: GeminiLLM._clean_schema(pv)
+                for pk, pv in cleaned["properties"].items()
+            }
+        if "items" in cleaned:
+            cleaned["items"] = GeminiLLM._clean_schema(cleaned["items"])
+        return cleaned
+
+    @staticmethod
     def _build_tools(funcs: List[Dict[str, Any]] | None):
         if not funcs:
             return None
@@ -111,7 +127,7 @@ class LLMProvider(LLMProviderBase):
                     types.FunctionDeclaration(
                         name=f["function"]["name"],
                         description=f["function"]["description"],
-                        parameters=f["function"]["parameters"],
+                        parameters=GeminiLLM._clean_schema(f["function"]["parameters"]),
                     )
                     for f in funcs
                 ]
@@ -170,7 +186,6 @@ class LLMProvider(LLMProviderBase):
             generation_config=self.gen_cfg,
             tools=tools,
             stream=True,
-            timeout=self.timeout,
         )
 
         try:

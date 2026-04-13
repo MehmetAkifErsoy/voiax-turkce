@@ -52,8 +52,8 @@ CHANNEL_MAP = {
 }
 
 
-# 默认新闻来源字典，当配置中没有指定时使用
-DEFAULT_NEWS_SOURCES = "澎湃新闻;百度热搜;财联社"
+# Varsayılan haber kaynakları
+DEFAULT_NEWS_SOURCES = "TRT Haber;Hürriyet;Sözcü"
 
 
 def get_news_sources_from_config(conn):
@@ -94,25 +94,25 @@ GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
     "function": {
         "name": "get_news_from_newsnow",
         "description": (
-            "获取最新新闻，随机选择一条新闻进行播报。"
-            f"用户可以选择不同的新闻源，标准的名称是：{example_sources_str}"
-            "例如用户要求百度新闻，其实就是百度热搜。如果没有指定，默认从澎湃新闻获取。"
-            "用户可以要求获取详细内容，此时会获取新闻的详细内容。"
+            "En son haberleri getir, rastgele bir haber seçerek oku."
+            f"Kullanıcı farklı haber kaynakları seçebilir, mevcut kaynaklar: {example_sources_str}"
+            "Belirtilmezse varsayılan haber kaynaklarından getirilir."
+            "Kullanıcı detaylı içerik isteyebilir, bu durumda haberin tam içeriği getirilir."
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "source": {
                     "type": "string",
-                    "description": f"新闻源的标准中文名称，例如{example_sources_str}等。可选参数，如果不提供则使用默认新闻源",
+                    "description": f"Haber kaynağının adı, örneğin {example_sources_str} vb. İsteğe bağlı, belirtilmezse varsayılan kaynak kullanılır",
                 },
                 "detail": {
                     "type": "boolean",
-                    "description": "是否获取详细内容，默认为false。如果为true，则获取上一条新闻的详细内容",
+                    "description": "Detaylı içerik getirilsin mi, varsayılan false. true ise önceki haberin detaylı içeriği getirilir",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "返回用户使用的语言code，例如zh_CN/zh_HK/en_US/ja_JP等，默认zh_CN",
+                    "description": "Kullanıcının dilinin kodu, örneğin tr_TR/en_US vb., varsayılan tr_TR",
                 },
             },
             "required": ["lang"],

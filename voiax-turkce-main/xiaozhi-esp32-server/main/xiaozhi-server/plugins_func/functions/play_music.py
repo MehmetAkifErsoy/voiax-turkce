@@ -22,13 +22,13 @@ play_music_function_desc = {
     "type": "function",
     "function": {
         "name": "play_music",
-        "description": "唱歌、听歌、播放音乐的方法。",
+        "description": "Şarkı söyleme, müzik dinleme, müzik çalma yöntemi.",
         "parameters": {
             "type": "object",
             "properties": {
                 "song_name": {
                     "type": "string",
-                    "description": "歌曲名称，如果用户没有指定具体歌名则为'random', 明确指定的时返回音乐的名字 示例: ```用户:播放两只老虎\n参数：两只老虎``` ```用户:播放音乐 \n参数：random ```",
+                    "description": "Şarkı adı. Kullanıcı belirli bir şarkı belirtmediyse 'random', belirttiyse şarkı adını döndür. Örnek: ```Kullanıcı: İstanbul şarkısı çal\nParametre: İstanbul``` ```Kullanıcı: müzik çal\nParametre: random```",
                 }
             },
             "required": ["song_name"],

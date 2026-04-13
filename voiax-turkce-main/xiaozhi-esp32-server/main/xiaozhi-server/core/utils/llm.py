@@ -13,7 +13,15 @@ logger = setup_logging()
 
 
 def create_instance(class_name, *args, **kwargs):
-    # 创建LLM实例
+    # Web panel type adı → dizin eşlemesi
+    type_mapping = {
+        "LLM_OpenAI": "openai",
+        "LLM_Gemini": "gemini",
+        "LLM_Dify": "dify",
+        "LLM_Ollama": "ollama",
+    }
+    class_name = type_mapping.get(class_name, class_name)
+    # LLM örneği oluştur
     if os.path.exists(os.path.join('core', 'providers', 'llm', class_name, f'{class_name}.py')):
         lib_name = f'core.providers.llm.{class_name}.{class_name}'
         if lib_name not in sys.modules:
