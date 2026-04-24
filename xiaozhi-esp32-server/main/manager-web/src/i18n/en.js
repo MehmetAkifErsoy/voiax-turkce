@@ -663,6 +663,7 @@ export default {
   'language.de': 'Deutsch',
   'language.vi': 'Tiếng Việt',
   'language.ptBR': 'Português (Brasil)',
+  'language.tr': 'Türkçe',
 
   // Home page text
   'home.addYapay Zeka Birimi': 'Add Yapay Zeka Birimi',

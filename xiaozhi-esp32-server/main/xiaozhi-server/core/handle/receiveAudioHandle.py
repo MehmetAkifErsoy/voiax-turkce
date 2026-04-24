@@ -144,7 +144,7 @@ async def check_bind_device(conn: "ConnectionHandler"):
             await send_stt_message(conn, text)
             return
 
-        text = f"请登录控制面板，输入{conn.bind_code}，绑定设备。"
+        text = f"Lutfen kontrol paneline giris yapin ve cihazi baglamak icin {conn.bind_code} kodunu girin."
         await send_stt_message(conn, text)
 
         # 播放提示音
@@ -166,7 +166,7 @@ async def check_bind_device(conn: "ConnectionHandler"):
     else:
         # 播放未绑定提示
         conn.client_abort = False
-        text = f"没有找到该设备的版本信息，请正确配置 OTA地址，然后重新编译固件。"
+        text = f"Cihazinizin surum bilgisi bulunamadi, lutfen kontrol edip tekrar deneyin."
         await send_stt_message(conn, text)
         music_path = "config/assets/bind_not_found.wav"
         opus_packets = await audio_to_data(music_path)
