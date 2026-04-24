@@ -64,8 +64,11 @@ class ManageApiClient:
                 limits = httpx.Limits(
                     max_keepalive_connections=0,  # 禁用 keep-alive，每次都新建连接
                 )
+                url = cls.config.get("url")
+                if not url.endswith("/"):
+                    url += "/"
                 cls._async_clients[loop_id] = httpx.AsyncClient(
-                    base_url=cls.config.get("url"),
+                    base_url=url,
                     headers={
                         "User-Agent": f"PythonClient/2.0 (PID:{os.getpid()})",
                         "Accept": "application/json",

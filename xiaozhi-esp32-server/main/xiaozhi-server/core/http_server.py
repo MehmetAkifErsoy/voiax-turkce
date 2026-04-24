@@ -42,7 +42,7 @@ class SimpleHttpServer:
             if port:
                 app = web.Application()
 
-                if not read_config_from_api:
+                if True:
                     # 如果没有开启智控台，只是单模块运行，就需要再添加简单OTA接口，用于下发websocket接口
                     app.add_routes(
                         [
