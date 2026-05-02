@@ -10,6 +10,20 @@
 
 #define TAG "MQTT"
 
+namespace {
+
+std::string MaskValue(const std::string& value, size_t prefix = 8, size_t suffix = 4) {
+    if (value.empty()) {
+        return "(empty)";
+    }
+    if (value.size() <= prefix + suffix + 3) {
+        return value;
+    }
+    return value.substr(0, prefix) + "..." + value.substr(value.size() - suffix);
+}
+
+}
+
 MqttProtocol::MqttProtocol() {
     event_group_handle_ = xEventGroupCreate();
 
@@ -69,6 +83,13 @@ bool MqttProtocol::StartMqttClient(bool report_error) {
     auto password = settings.GetString("password");
     int keepalive_interval = settings.GetInt("keepalive", 240);
     publish_topic_ = settings.GetString("publish_topic");
+
+    ESP_LOGI(TAG, "MQTT settings: endpoint=%s, client_id=%s, publish_topic=%s, username=%s, password=%s",
+        endpoint.empty() ? "(missing)" : endpoint.c_str(),
+        MaskValue(client_id, 14, 8).c_str(),
+        publish_topic_.empty() ? "(missing)" : publish_topic_.c_str(),
+        username.empty() ? "missing" : "set",
+        password.empty() ? "missing" : "set");
 
     if (endpoint.empty()) {
         ESP_LOGW(TAG, "MQTT endpoint is not specified");

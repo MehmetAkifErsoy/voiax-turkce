@@ -478,8 +478,10 @@ void Application::InitializeProtocol() {
     display->SetStatus(Lang::Strings::LOADING_PROTOCOL);
 
     if (ota_->HasMqttConfig()) {
+        ESP_LOGI(TAG, "Protocol selected: MQTT (OTA mqtt config present)");
         protocol_ = std::make_unique<MqttProtocol>();
     } else if (ota_->HasWebsocketConfig()) {
+        ESP_LOGW(TAG, "Protocol selected: WebSocket fallback (OTA websocket config present, mqtt config missing)");
         protocol_ = std::make_unique<WebsocketProtocol>();
     } else {
         ESP_LOGW(TAG, "No protocol specified in the OTA config, using MQTT");
@@ -1113,4 +1115,3 @@ void Application::ResetProtocol() {
         protocol_.reset();
     });
 }
-

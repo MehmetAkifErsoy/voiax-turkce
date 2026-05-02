@@ -24,6 +24,23 @@
 
 #define TAG "Ota"
 
+namespace {
+
+std::string MaskValue(const std::string& value, size_t prefix = 8, size_t suffix = 4) {
+    if (value.empty()) {
+        return "(empty)";
+    }
+    if (value.size() <= prefix + suffix + 3) {
+        return value;
+    }
+    return value.substr(0, prefix) + "..." + value.substr(value.size() - suffix);
+}
+
+bool IsLegacyOtaUrl(const std::string& url) {
+    return url.find(":8003") != std::string::npos;
+}
+
+}
 
 Ota::Ota() {
 #ifdef ESP_EFUSE_BLOCK_USR_DATA
@@ -44,10 +61,24 @@ Ota::~Ota() {
 }
 
 std::string Ota::GetCheckVersionUrl() {
-    Settings settings("wifi", false);
+    Settings settings("wifi", true);
     std::string url = settings.GetString("ota_url");
+    const std::string default_url = CONFIG_OTA_URL;
     if (url.empty()) {
-        url = CONFIG_OTA_URL;
+        ESP_LOGI(TAG, "Using compiled OTA URL: %s", default_url.c_str());
+        return default_url;
+    }
+    if (IsLegacyOtaUrl(url)) {
+        ESP_LOGW(TAG, "Legacy OTA URL found in NVS: %s", url.c_str());
+        ESP_LOGW(TAG, "Forcing OTA URL to compiled default: %s", default_url.c_str());
+        settings.SetString("ota_url", default_url);
+        return default_url;
+    }
+    if (url != default_url) {
+        ESP_LOGW(TAG, "Using custom OTA URL from NVS: %s", url.c_str());
+        ESP_LOGW(TAG, "Compiled OTA URL is: %s", default_url.c_str());
+    } else {
+        ESP_LOGI(TAG, "Using OTA URL from NVS: %s", url.c_str());
     }
     return url;
 }
@@ -87,6 +118,7 @@ esp_err_t Ota::CheckVersion() {
         ESP_LOGE(TAG, "Check version URL is not properly set");
         return ESP_ERR_INVALID_ARG;
     }
+    ESP_LOGI(TAG, "Checking OTA version at: %s", url.c_str());
 
     auto http = SetupHttp();
 
@@ -131,6 +163,7 @@ esp_err_t Ota::CheckVersion() {
         if (cJSON_IsString(code)) {
             activation_code_ = code->valuestring;
             has_activation_code_ = true;
+            ESP_LOGW(TAG, "Activation code received: %s", activation_code_.c_str());
         }
         cJSON* challenge = cJSON_GetObjectItem(activation, "challenge");
         if (cJSON_IsString(challenge)) {
@@ -141,17 +174,39 @@ esp_err_t Ota::CheckVersion() {
         if (cJSON_IsNumber(timeout_ms)) {
             activation_timeout_ms_ = timeout_ms->valueint;
         }
+        if (!activation_message_.empty()) {
+            ESP_LOGI(TAG, "Activation message: %s", activation_message_.c_str());
+        }
     }
 
     has_mqtt_config_ = false;
     cJSON *mqtt = cJSON_GetObjectItem(root, "mqtt");
     if (cJSON_IsObject(mqtt)) {
         Settings settings("mqtt", true);
+        std::string endpoint;
+        std::string client_id;
+        std::string publish_topic;
+        std::string subscribe_topic;
+        bool has_username = false;
+        bool has_password = false;
         cJSON *item = NULL;
         cJSON_ArrayForEach(item, mqtt) {
             if (cJSON_IsString(item)) {
                 if (settings.GetString(item->string) != item->valuestring) {
                     settings.SetString(item->string, item->valuestring);
+                }
+                if (strcmp(item->string, "endpoint") == 0) {
+                    endpoint = item->valuestring;
+                } else if (strcmp(item->string, "client_id") == 0) {
+                    client_id = item->valuestring;
+                } else if (strcmp(item->string, "publish_topic") == 0) {
+                    publish_topic = item->valuestring;
+                } else if (strcmp(item->string, "subscribe_topic") == 0) {
+                    subscribe_topic = item->valuestring;
+                } else if (strcmp(item->string, "username") == 0) {
+                    has_username = true;
+                } else if (strcmp(item->string, "password") == 0) {
+                    has_password = true;
                 }
             } else if (cJSON_IsNumber(item)) {
                 if (settings.GetInt(item->string) != item->valueint) {
@@ -160,6 +215,13 @@ esp_err_t Ota::CheckVersion() {
             }
         }
         has_mqtt_config_ = true;
+        ESP_LOGI(TAG, "MQTT config received: endpoint=%s, client_id=%s, publish_topic=%s, subscribe_topic=%s, username=%s, password=%s",
+            endpoint.empty() ? "(missing)" : endpoint.c_str(),
+            MaskValue(client_id, 14, 8).c_str(),
+            publish_topic.empty() ? "(missing)" : publish_topic.c_str(),
+            subscribe_topic.empty() ? "(missing)" : subscribe_topic.c_str(),
+            has_username ? "set" : "missing",
+            has_password ? "set" : "missing");
     } else {
         ESP_LOGI(TAG, "No mqtt section found !");
     }
@@ -168,11 +230,18 @@ esp_err_t Ota::CheckVersion() {
     cJSON *websocket = cJSON_GetObjectItem(root, "websocket");
     if (cJSON_IsObject(websocket)) {
         Settings settings("websocket", true);
+        std::string websocket_url;
+        bool has_token = false;
         cJSON *item = NULL;
         cJSON_ArrayForEach(item, websocket) {
             if (cJSON_IsString(item)) {
                 if (settings.GetString(item->string) != item->valuestring) {
                     settings.SetString(item->string, item->valuestring);
+                }
+                if (strcmp(item->string, "url") == 0) {
+                    websocket_url = item->valuestring;
+                } else if (strcmp(item->string, "token") == 0) {
+                    has_token = true;
                 }
             } else if (cJSON_IsNumber(item)) {
                 if (settings.GetInt(item->string) != item->valueint) {
@@ -181,6 +250,9 @@ esp_err_t Ota::CheckVersion() {
             }
         }
         has_websocket_config_ = true;
+        ESP_LOGI(TAG, "WebSocket config received: url=%s, token=%s",
+            websocket_url.empty() ? "(missing)" : MaskValue(websocket_url, 36, 8).c_str(),
+            has_token ? "set" : "missing");
     } else {
         ESP_LOGI(TAG, "No websocket section found!");
     }
