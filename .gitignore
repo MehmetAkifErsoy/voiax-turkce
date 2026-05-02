@@ -9,6 +9,15 @@ sdkconfig.old
 sdkconfig
 dependencies.lock
 .env
+**/.env
+.config.yaml
+**/.config.yaml
+**/data/.config.yaml
+.pm2/
+node_modules/
+**/node_modules/
+xiaozhi-mqtt-gateway/.env
+xiaozhi-mqtt-gateway/.git/
 releases/
 main/assets/lang_config.h
 main/mmap_generate_emoji.h

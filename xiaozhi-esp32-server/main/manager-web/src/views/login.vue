@@ -98,7 +98,7 @@
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/shield.png" />
                 <el-input v-model="form.captcha" :placeholder="$t('login.captchaPlaceholder')" style="flex: 1" />
               </div>
-              <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="验证码"
+              <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="Doğrulama kodu"
                 style="width: 150px; height: 40px; cursor: pointer" @click="fetchCaptcha" />
             </div>
             <div style="
@@ -174,7 +174,7 @@ export default {
     }),
     // 获取当前语言
     currentLanguage() {
-      return i18n.locale || "zh_CN";
+      return i18n.locale || "tr";
     },
     // 获取当前语言显示文本
     currentLanguageText() {
@@ -195,7 +195,7 @@ export default {
         case "tr":
           return this.$t("language.tr");
         default:
-          return this.$t("language.zhCN");
+          return this.$t("language.tr");
       }
     },
     // 根据当前语言获取对应的xiaozhi-ai图标
@@ -215,7 +215,7 @@ export default {
         case "tr":
           return require("@/assets/xiaozhi-ai_en.png");
         default:
-          return require("@/assets/xiaozhi-ai.png");
+          return require("@/assets/xiaozhi-ai_en.png");
       }
     },
   },

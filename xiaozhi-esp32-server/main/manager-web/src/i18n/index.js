@@ -35,12 +35,12 @@ const getDefaultLanguage = () => {
   if (browserLang.indexOf('tr') === 0) {
     return 'tr';
   }
-  return 'en';
+  return 'tr';
 };
 
 const i18n = new VueI18n({
   locale: getDefaultLanguage(),
-  fallbackLocale: 'zh_CN',
+  fallbackLocale: 'tr',
   messages: {
     'zh_CN': zhCN,
     'zh_TW': zhTW,

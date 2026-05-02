@@ -1,5 +1,5 @@
 export default {
-  // Giriş sayfasıi
+  // Giriş sayfası
   'login.requiredUsername': 'Kullanıcı adı boş olamaz',
   'login.requiredPassword': 'Şifre boş olamaz',
   'login.requiredCaptcha': 'Doğrulama kodu boş olamaz',
@@ -7,7 +7,7 @@ export default {
   'login.loginSuccess': 'Giriş başarılı!',
 
   // Üst menü çubuğu
-  'header.smartManagement': 'Yapay Zeka Birimleri',
+  'header.smartManagement': 'Asistanlar',
   'header.modelConfig': 'Modeller',
   'header.knowledgeBase': 'Bilgi Dağarcığı',
   'header.voiceCloneManagement': 'Ses Klonlama',
@@ -17,10 +17,10 @@ export default {
   'header.paramDictionary': 'Daha Fazla',
   'header.paramManagement': 'Parametre Yönetimi',
   'header.dictManagement': 'Sözlük Yönetimi',
-  'header.Yapay Zeka BirimiTemplate': 'Varsayılan Rol Şablonları',
+  'header.Yapay Zeka BirimiTemplate': 'Rol Şablonları',
   'header.searchHistory': 'Arama Geçmişi',
   'header.clearHistory': 'Geçmişi Temizle',
-  'header.Hizmet SağlayıcıManagement': 'Hizmet Sağlayıcı Yönetimi',
+  'header.Hizmet SağlayıcıManagement': 'Sağlayıcı Yönetimi',
   'header.serverSideManagement': 'Sunucu Yönetimi',
   'header.featureManagement': 'Sistem Özellik Yönetimi',
   'header.changePassword': 'Şifre Değiştir',
@@ -615,14 +615,14 @@ export default {
   'user.searchPhone': 'Telefon numarası ile arayın',
   'user.search': 'Ara',
 
-  // Hizmet Sağlayıcı Yönetimi Sayfası
+  // Sağlayıcı Yönetimi Sayfası
   'Hizmet SağlayıcıManagement.categoryFilter': 'Kategori Filtresi',
-  'Hizmet SağlayıcıManagement.searchPlaceholder': 'Hizmet sağlayıcı adı ile arayın',
+  'Hizmet SağlayıcıManagement.searchPlaceholder': 'Sağlayıcı adı ile arayın',
   'Hizmet SağlayıcıManagement.category': 'Kategori',
-  'Hizmet SağlayıcıManagement.Hizmet SağlayıcıCode': 'Hizmet Sağlayıcı Kodu',
+  'Hizmet SağlayıcıManagement.Hizmet SağlayıcıCode': 'Sağlayıcı Kodu',
   'Hizmet SağlayıcıManagement.fieldConfig': 'Alan Yapılandırması',
-  'Hizmet SağlayıcıManagement.selectToDelete': 'Lütfen önce silinecek hizmet sağlayıcıları seçin',
-  'Hizmet SağlayıcıManagement.confirmDelete': 'Seçili {count} hizmet sağlayıcıyı silmek istediğinizden emin misiniz?',
+  'Hizmet SağlayıcıManagement.selectToDelete': 'Lütfen önce silinecek sağlayıcıları seçin',
+  'Hizmet SağlayıcıManagement.confirmDelete': 'Seçili {count} sağlayıcıyı silmek istediğinizden emin misiniz?',
   'Hizmet SağlayıcıManagement.viewFields': 'Alanları Görüntüle',
 
   // Ortak metinler
@@ -641,9 +641,9 @@ export default {
   'common.prevPage': 'Önceki Sayfa',
   'common.nextPage': 'Sonraki Sayfa',
   'common.totalRecords': 'Toplam {number} kayıt',
-  'common.addHizmet Sağlayıcı': 'Hizmet Sağlayıcı Ekle',
+  'common.addHizmet Sağlayıcı': 'Sağlayıcı Ekle',
   'common.success': 'Başarılı',
-  'common.editHizmet Sağlayıcı': 'Hizmet Sağlayıcıyı Düzenle',
+  'common.editHizmet Sağlayıcı': 'Sağlayıcıyı Düzenle',
   'common.updateSuccess': 'Güncelleme Başarılı',
   'common.addSuccess': 'Ekleme Başarılı',
   'common.deleteSuccess': 'Silme Başarılı',
@@ -659,8 +659,8 @@ export default {
   'common.insufficient': 'Yetersiz',
 
   // Dil değiştirme
-  'language.zhCN': '中文简体',
-  'language.zhTW': '中文繁體',
+  'language.zhCN': 'Basitleştirilmiş Çince',
+  'language.zhTW': 'Geleneksel Çince',
   'language.en': 'English',
   'language.de': 'Deutsch',
   'language.vi': 'Tiếng Việt',
@@ -668,7 +668,7 @@ export default {
   'language.tr': 'Türkçe',
 
   // Ana sayfa
-  'home.addYapay Zeka Birimi': 'Yapay Zeka Birimi Ekle',
+  'home.addYapay Zeka Birimi': 'Asistan Ekle',
   'home.greeting': 'Merhaba VoiaX',
   'home.wish': 'Harika bir gün geçirelim!',
   'home.languageModel': 'LLM',
@@ -682,7 +682,7 @@ export default {
   'home.justNow': 'Az önce',
   'home.minutesAgo': '{minutes} dakika önce',
   'home.hoursAgo': '{hours} saat {minutes} dakika önce',
-  'home.confirmDeleteYapay Zeka Birimi': 'Bu Yapay Zeka Birimini silmek istediğinizden emin misiniz?',
+  'home.confirmDeleteYapay Zeka Birimi': 'Bu asistanı silmek istediğinizden emin misiniz?',
   'home.deleteSuccess': 'Silme başarılı',
   'home.deleteFailed': 'Silme başarısız',
   'home.enableMemory': 'Lütfen önce "Rol Yapılandır" sayfasından belleği etkinleştirin',
@@ -738,13 +738,13 @@ export default {
   'serverSideKontrol Merkezi.restartSuccess': 'Yeniden başlatma başarılı',
   'serverSideKontrol Merkezi.updateConfigSuccess': 'Yapılandırma güncelleme başarılı',
 
-  // Yapay Zeka Birimi ekleme diyaloğu
-  'addYapay Zeka BirimiDialog.title': 'Yapay Zeka Birimi Ekle',
-  'addYapay Zeka BirimiDialog.Yapay Zeka BirimiName': 'Yapay Zeka Birimi Adı',
-  'addYapay Zeka BirimiDialog.placeholder': 'Lütfen Yapay Zeka Birimi adı girin..',
+  // Asistan ekleme diyaloğu
+  'addYapay Zeka BirimiDialog.title': 'Asistan Ekle',
+  'addYapay Zeka BirimiDialog.Yapay Zeka BirimiName': 'Asistan Adı',
+  'addYapay Zeka BirimiDialog.placeholder': 'Lütfen asistan adı girin.',
   'addYapay Zeka BirimiDialog.confirm': 'Onayla',
   'addYapay Zeka BirimiDialog.cancel': 'İptal',
-  'addYapay Zeka BirimiDialog.nameRequired': 'Lütfen Yapay Zeka Birimi adı girin',
+  'addYapay Zeka BirimiDialog.nameRequired': 'Lütfen asistan adı girin',
   'addYapay Zeka BirimiDialog.addSuccess': 'Ekleme başarılı',
 
   // Rol yapılandırma sayfası
@@ -816,7 +816,7 @@ export default {
   'functionDialog.noNeedToConfig': ' için parametre yapılandırması gerekmiyor',
   'functionDialog.pleaseSelectFunctionForParam': 'Parametre ayarları için lütfen yapılandırılmış bir fonksiyon seçin',
   'functionDialog.mcpAccessPoint': 'MCP Erişim Noktası',
-  'functionDialog.mcpAddressDesc': 'Aşağıda Yapay Zeka Birimi için MCP erişim noktası adresleri bulunmaktadır.',
+  'functionDialog.mcpAddressDesc': 'Aşağıda asistan için MCP erişim noktası adresleri bulunmaktadır.',
   'functionDialog.howToDeployMcp': 'MCP erişim noktası nasıl kurulur',
   'functionDialog.howToIntegrateMcp': 'MCP fonksiyonları nasıl entegre edilir',
   'functionDialog.copy': 'Kopyala',
@@ -846,7 +846,7 @@ export default {
   'modelConfig.rag': 'RAG',
   'modelConfig.modelId': 'Model ID',
   'modelConfig.modelName': 'Model Adı',
-  'modelConfig.Hizmet Sağlayıcı': 'Arayüz Türü',
+  'modelConfig.Hizmet Sağlayıcı': 'Sağlayıcı',
   'modelConfig.unknown': 'Bilinmiyor',
   'modelConfig.isEnabled': 'Etkin',
   'modelConfig.isDefault': 'Varsayılan',
@@ -990,7 +990,7 @@ export default {
   'otaManagement.addFailed': 'Ekleme başarısız',
   'otaManagement.fetchFirmwareListFailed': 'Yazılım listesi alınamadı',
 
-  // Hizmet Sağlayıcı Yönetimi model türü çevirileri
+  // Sağlayıcı Yönetimi model türü çevirileri
   'Hizmet SağlayıcıManagement.all': 'Tümü',
   'Hizmet SağlayıcıManagement.modelType.ASR': 'Konuşma Tanıma',
   'Hizmet SağlayıcıManagement.modelType.TTS': 'Metinden Konuşmaya',
@@ -1002,13 +1002,13 @@ export default {
   'Hizmet SağlayıcıManagement.modelType.Plugin': 'Eklenti Aracı',
   'Hizmet SağlayıcıManagement.modelType.RAG': 'RAG',
 
-  // Hizmet Sağlayıcı Diyaloğu
+  // Sağlayıcı Diyaloğu
   'Hizmet SağlayıcıDialog.category': 'Kategori',
   'Hizmet SağlayıcıDialog.selectCategory': 'Lütfen kategori seçin',
   'Hizmet SağlayıcıDialog.code': 'Kod',
-  'Hizmet SağlayıcıDialog.inputCode': 'Lütfen hizmet sağlayıcı kodu girin',
+  'Hizmet SağlayıcıDialog.inputCode': 'Lütfen sağlayıcı kodu girin',
   'Hizmet SağlayıcıDialog.name': 'Ad',
-  'Hizmet SağlayıcıDialog.inputName': 'Lütfen hizmet sağlayıcı adı girin',
+  'Hizmet SağlayıcıDialog.inputName': 'Lütfen sağlayıcı adı girin',
   'Hizmet SağlayıcıDialog.sort': 'Sıralama',
   'Hizmet SağlayıcıDialog.fieldConfig': 'Alan Yapılandırması',
   'Hizmet SağlayıcıDialog.add': 'Ekle',
@@ -1033,15 +1033,15 @@ export default {
   'Hizmet SağlayıcıDialog.delete': 'Sil',
   'Hizmet SağlayıcıDialog.save': 'Kaydet',
   'Hizmet SağlayıcıDialog.requiredCategory': 'Lütfen kategori seçin',
-  'Hizmet SağlayıcıDialog.requiredCode': 'Lütfen hizmet sağlayıcı kodu girin',
-  'Hizmet SağlayıcıDialog.requiredName': 'Lütfen hizmet sağlayıcı adı girin',
+  'Hizmet SağlayıcıDialog.requiredCode': 'Lütfen sağlayıcı kodu girin',
+  'Hizmet SağlayıcıDialog.requiredName': 'Lütfen sağlayıcı adı girin',
   'Hizmet SağlayıcıDialog.completeFieldEdit': 'Lütfen önce mevcut alan düzenlemesini tamamlayın',
   'Hizmet SağlayıcıDialog.confirmDeleteField': 'Bu alanı silmek istediğinizden emin misiniz?',
   'Hizmet SağlayıcıDialog.selectFieldsToDelete': 'Lütfen önce silinecek alanları seçin',
   'Hizmet SağlayıcıDialog.confirmBatchDeleteFields': 'Seçili {count} alanı silmek istediğinizden emin misiniz?',
   'Hizmet SağlayıcıDialog.batchDeleteFieldsSuccess': '{count} alan başarıyla silindi',
 
-  // Yapay Zeka Birimi Şablon Yönetimi
+  // Asistan Şablon Yönetimi
   'Yapay Zeka BirimiTemplateManagement.title': 'Varsayılan Rol Yönetimi',
   'Yapay Zeka BirimiTemplateManagement.templateName': 'Şablon Adı',
   'Yapay Zeka BirimiTemplateManagement.action': 'İşlem',
@@ -1314,7 +1314,7 @@ export default {
   'featureManagement.save': 'Yapılandırmayı Kaydet',
   'featureManagement.reset': 'Sıfırla',
   'featureManagement.group.featureManagement': 'Özelliği/bölümü etkinleştir/devre dışı bırak',
-  'featureManagement.group.voiceManagement': 'Yapay Zeka Birimi yapılandırması sırasında kullanıcılara görünür',
+  'featureManagement.group.voiceManagement': 'Asistan yapılandırması sırasında kullanıcılara görünür',
   'featureManagement.noFeatures': 'Kullanılabilir özellik yok',
   'featureManagement.contactAdmin': 'Özelliklerin yapılandırılması için lütfen yöneticiyle iletişime geçin',
   'featureManagement.saveSuccess': 'Özellik yapılandırması başarıyla kaydedildi',
