@@ -1,27 +1,22 @@
-本文档是开发类文档，如需部署小智服务端，[点击这里查看部署教程](../../README.md#%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3)
+# VoiaX Web Panel
 
-# xiaozhi
+Bu klasör VoiaX web panelinin kaynak kodunu içerir. Teknik path ve package adları korunur; kullanıcıya görünen ürün adı VoiaX’tir.
 
-## Project setup
+## Geliştirme
 
-开发使用代码编辑器，导入项目时，选择`manager-web`文件夹作为项目目录
+Projeyi kod editöründe açarken çalışma dizini olarak `manager-web` klasörünü seçin.
 
-```
+```shell
 npm install
-```
-
-### Compiles and hot-reloads for development
-
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
+## Üretim Build
 
-```
+```shell
 npm run build
 ```
 
-### Customize configuration
+## Yapılandırma
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Vue CLI yapılandırması için [Configuration Reference](https://cli.vuejs.org/config/) dokümanına bakın.

@@ -18,7 +18,7 @@
             </div>
             <div class="add-device-btn">
               <div class="left-add" @click="showAddDialog">
-                Yeni Yapay Zeka Birimi Ekle
+                Yeni Asistan Ekle
               </div>
               <div style="width: 23px;height: 13px;background: #5778ff;margin-left: -10px;" />
               <div class="right-add">
@@ -134,7 +134,7 @@ export default {
         }
         this.isLoading = false;
       }, (error) => {
-        console.error('搜索智能体失败:', error);
+        console.error('Asistan araması başarısız:', error);
         this.isLoading = false;
         this.$message.error(this.$t('message.searchFailed'));
       });
@@ -169,13 +169,13 @@ export default {
         }
         this.isLoading = false;
       }, (error) => {
-        console.error('Failed to fetch agent list:', error);
+        console.error('Asistan listesi alınamadı:', error);
         this.isLoading = false;
       });
     },
     // 删除智能体
     handleDeleteAgent(agentId) {
-      this.$confirm(this.$t('home.confirmDeleteAgent'), '提示', {
+      this.$confirm(this.$t('home.confirmDeleteAgent'), this.$t('common.tip'), {
         confirmButtonText: this.$t('button.ok'),
         cancelButtonText: this.$t('button.cancel'),
         type: 'warning'

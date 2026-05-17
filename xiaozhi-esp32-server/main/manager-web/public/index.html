@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="tr">
 
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,7 @@
   <meta name="keywords" content="<%= process.env.VUE_APP_KEYWORDS %>">
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title>
-    VoiaX - Robot Kontrol Paneli
+    VoiaX Kontrol Paneli
   </title>
   <% if (htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
     <% for (var i in htmlWebpackPlugin.options.cdn.css) { %>
@@ -20,7 +20,7 @@
 
 <body>
   <div id="app"></div>
-  <!-- built files will be auto injected -->
+  <!-- Build çıktıları otomatik eklenecek. -->
   <% if (htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
     <% for (var i in htmlWebpackPlugin.options.cdn.js) { %>
       <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>

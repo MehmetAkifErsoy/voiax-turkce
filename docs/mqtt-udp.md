@@ -1,25 +1,25 @@
-# MQTT + UDP 混合通信协议文档
+# MQTT + UDP Karma İletişim Protokolü
 
-基于代码实现整理的 MQTT + UDP 混合通信协议文档，概述设备端与服务器之间如何通过 MQTT 进行控制消息传输，通过 UDP 进行音频数据传输的交互方式。
-
----
-
-## 1. 协议概览
-
-本协议采用混合传输方式：
-- **MQTT**：用于控制消息、状态同步、JSON 数据交换
-- **UDP**：用于实时音频数据传输，支持加密
-
-### 1.1 协议特点
-
-- **双通道设计**：控制与数据分离，确保实时性
-- **加密传输**：UDP 音频数据使用 AES-CTR 加密
-- **序列号保护**：防止数据包重放和乱序
-- **自动重连**：MQTT 连接断开时自动重连
+Bu belge, kod uygulamasına göre hazırlanmış MQTT + UDP karma iletişim protokolü özetidir. Cihaz ile sunucunun kontrol mesajlarını MQTT üzerinden, ses verisini ise UDP üzerinden nasıl aktardığını açıklar.
 
 ---
 
-## 2. 总体流程概览
+## 1. Protokol Genel Bakışı
+
+Bu protokol karma aktarım modeli kullanır:
+- **MQTT**: Kontrol mesajları, durum senkronizasyonu ve JSON veri alışverişi için kullanılır.
+- **UDP**: Gerçek zamanlı ses verisi aktarımı için kullanılır ve şifrelemeyi destekler.
+
+### 1.1 Protokol Özellikleri
+
+- **Çift kanal tasarımı**: Kontrol ve veri kanalları ayrıdır; bu gerçek zamanlılığı korur.
+- **Şifreli aktarım**: UDP ses verisi AES-CTR ile şifrelenir.
+- **Sıra numarası koruması**: Paket tekrarı ve sıra bozulmasına karşı koruma sağlar.
+- **Otomatik yeniden bağlantı**: MQTT bağlantısı koptuğunda otomatik yeniden bağlanır.
+
+---
+
+## 2. Genel Akış
 
 ```mermaid
 sequenceDiagram
@@ -58,19 +58,19 @@ sequenceDiagram
 
 ---
 
-## 3. MQTT 控制通道
+## 3. MQTT Kontrol Kanalı
 
-### 3.1 连接建立
+### 3.1 Bağlantı Kurulumu
 
-设备通过 MQTT 连接到服务器，连接参数包括：
-- **Endpoint**：MQTT 服务器地址和端口
-- **Client ID**：设备唯一标识符
-- **Username/Password**：认证凭据
-- **Keep Alive**：心跳间隔（默认240秒）
+Cihaz MQTT ile sunucuya bağlanır. Bağlantı parametreleri şunlardır:
+- **Endpoint**: MQTT sunucu adresi ve portu.
+- **Client ID**: Cihaza ait benzersiz kimlik.
+- **Username/Password**: Kimlik doğrulama bilgileri.
+- **Keep Alive**: Kalp atışı aralığı (varsayılan 240 saniye).
 
-### 3.2 Hello 消息交换
+### 3.2 Hello Mesaj Alışverişi
 
-#### 3.2.1 设备端发送 Hello
+#### 3.2.1 Cihazın Hello Göndermesi
 
 ```json
 {
@@ -89,7 +89,7 @@ sequenceDiagram
 }
 ```
 
-#### 3.2.2 服务器响应 Hello
+#### 3.2.2 Sunucunun Hello Yanıtı
 
 ```json
 {
@@ -111,17 +111,17 @@ sequenceDiagram
 }
 ```
 
-**字段说明：**
-- `udp.server`：UDP 服务器地址
-- `udp.port`：UDP 服务器端口
-- `udp.key`：AES 加密密钥（十六进制字符串）
-- `udp.nonce`：AES 加密随机数（十六进制字符串）
+**Alan açıklamaları:**
+- `udp.server`: UDP sunucu adresi.
+- `udp.port`: UDP sunucu portu.
+- `udp.key`: AES şifreleme anahtarı (onaltılık string).
+- `udp.nonce`: AES nonce değeri (onaltılık string).
 
-### 3.3 JSON 消息类型
+### 3.3 JSON Mesaj Türleri
 
-#### 3.3.1 设备端→服务器
+#### 3.3.1 Cihaz → Sunucu
 
-1. **Listen 消息**
+1. **Listen Mesajı**
    ```json
    {
      "session_id": "xxx",
@@ -131,7 +131,7 @@ sequenceDiagram
    }
    ```
 
-2. **Abort 消息**
+2. **Abort Mesajı**
    ```json
    {
      "session_id": "xxx",
@@ -140,7 +140,7 @@ sequenceDiagram
    }
    ```
 
-3. **MCP 消息**
+3. **MCP Mesajı**
    ```json
    {
      "session_id": "xxx",
@@ -153,7 +153,7 @@ sequenceDiagram
    }
    ```
 
-4. **Goodbye 消息**
+4. **Goodbye Mesajı**
    ```json
    {
      "session_id": "xxx",
@@ -161,71 +161,71 @@ sequenceDiagram
    }
    ```
 
-#### 3.3.2 服务器→设备端
+#### 3.3.2 Sunucu → Cihaz
 
-支持的消息类型与 WebSocket 协议一致，包括：
-- **STT**：语音识别结果
-- **TTS**：语音合成控制
-- **LLM**：情感表达控制
-- **MCP**：物联网控制
-- **System**：系统控制
-- **Custom**：自定义消息（可选）
+Desteklenen mesaj türleri WebSocket protokolüyle aynıdır:
+- **STT**: Ses tanıma sonucu.
+- **TTS**: Ses sentezi kontrolü.
+- **LLM**: Duygu/ifade kontrolü.
+- **MCP**: IoT kontrolü.
+- **System**: Sistem kontrolü.
+- **Custom**: Özel mesaj (isteğe bağlı).
 
 ---
 
-## 4. UDP 音频通道
+## 4. UDP Ses Kanalı
 
-### 4.1 连接建立
+### 4.1 Bağlantı Kurulumu
 
-设备收到 MQTT Hello 响应后，使用其中的 UDP 连接信息建立音频通道：
-1. 解析 UDP 服务器地址和端口
-2. 解析加密密钥和随机数
-3. 初始化 AES-CTR 加密上下文
-4. 建立 UDP 连接
+Cihaz MQTT Hello yanıtını aldıktan sonra içindeki UDP bağlantı bilgileriyle ses kanalını kurar:
+1. UDP sunucu adresini ve portunu ayrıştırır.
+2. Şifreleme anahtarını ve nonce değerini ayrıştırır.
+3. AES-CTR şifreleme bağlamını başlatır.
+4. UDP bağlantısını kurar.
 
-### 4.2 音频数据格式
+### 4.2 Ses Verisi Formatı
 
-#### 4.2.1 加密音频包结构
+#### 4.2.1 Şifreli Ses Paketi Yapısı
 
 ```
 |type 1byte|flags 1byte|payload_len 2bytes|ssrc 4bytes|timestamp 4bytes|sequence 4bytes|
 |payload payload_len bytes|
 ```
 
-**字段说明：**
-- `type`：数据包类型，固定为 0x01
-- `flags`：标志位，当前未使用
-- `payload_len`：负载长度（网络字节序）
-- `ssrc`：同步源标识符
-- `timestamp`：时间戳（网络字节序）
-- `sequence`：序列号（网络字节序）
-- `payload`：加密的 Opus 音频数据
+**Alan açıklamaları:**
+- `type`: Paket türü; sabit değer 0x01.
+- `flags`: Bayrak alanı; şu anda kullanılmıyor.
+- `payload_len`: Payload uzunluğu (network byte order).
+- `ssrc`: Senkronizasyon kaynağı kimliği.
+- `timestamp`: Zaman damgası (network byte order).
+- `sequence`: Sıra numarası (network byte order).
+- `payload`: Şifrelenmiş Opus ses verisi.
 
-#### 4.2.2 加密算法
+#### 4.2.2 Şifreleme Algoritması
 
-使用 **AES-CTR** 模式加密：
-- **密钥**：128位，由服务器提供
-- **随机数**：128位，由服务器提供
-- **计数器**：包含时间戳和序列号信息
+Şifreleme için **AES-CTR** modu kullanılır:
+- **Anahtar**: 128 bit, sunucu tarafından sağlanır.
+- **Nonce**: 128 bit, sunucu tarafından sağlanır.
+- **Sayaç**: Zaman damgası ve sıra numarası bilgisini içerir.
 
-### 4.3 序列号管理
+### 4.3 Sıra Numarası Yönetimi
 
-- **发送端**：`local_sequence_` 单调递增
-- **接收端**：`remote_sequence_` 验证连续性
-- **防重放**：拒绝序列号小于期望值的数据包
-- **容错处理**：允许轻微的序列号跳跃，记录警告
+- **Gönderici**: `local_sequence_` tek yönlü artar.
+- **Alıcı**: `remote_sequence_` sürekliliği doğrular.
+- **Tekrar koruması**: Beklenen değerden küçük sıra numarasına sahip paketler reddedilir.
+- **Hata toleransı**: Küçük sıra numarası sıçramalarına izin verilir ve uyarı kaydedilir.
 
-### 4.4 错误处理
+### 4.4 Hata İşleme
 
-1. **解密失败**：记录错误，丢弃数据包
-2. **序列号异常**：记录警告，但仍处理数据包
-3. **数据包格式错误**：记录错误，丢弃数据包
+1. **Şifre çözme hatası**: Hata kaydedilir, paket atılır.
+2. **Sıra numarası anormalliği**: Uyarı kaydedilir, paket yine de işlenir.
+3. **Paket formatı hatası**: Hata kaydedilir, paket atılır.
 
 ---
 
-## 5. 状态管理
+## 5. Durum Yönetimi
 
-### 5.1 连接状态
+### 5.1 Bağlantı Durumu
 
 ```mermaid
 stateDiagram
@@ -245,9 +245,9 @@ stateDiagram
     MqttConnected --> Disconnected: MQTT Disconnect
 ```
 
-### 5.2 状态检查
+### 5.2 Durum Kontrolü
 
-设备通过以下条件判断音频通道是否可用：
+Cihaz ses kanalının kullanılabilir olup olmadığını aşağıdaki koşulla değerlendirir:
 ```cpp
 bool IsAudioChannelOpened() const {
     return udp_ != nullptr && !error_occurred_ && !IsTimeout();
@@ -256,138 +256,138 @@ bool IsAudioChannelOpened() const {
 
 ---
 
-## 6. 配置参数
+## 6. Yapılandırma Parametreleri
 
-### 6.1 MQTT 配置
+### 6.1 MQTT Yapılandırması
 
-从设置中读取的配置项：
-- `endpoint`：MQTT 服务器地址
-- `client_id`：客户端标识符
-- `username`：用户名
-- `password`：密码
-- `keepalive`：心跳间隔（默认240秒）
-- `publish_topic`：发布主题
+Ayarlar içinden okunan yapılandırma alanları:
+- `endpoint`: MQTT sunucu adresi.
+- `client_id`: İstemci kimliği.
+- `username`: Kullanıcı adı.
+- `password`: Parola.
+- `keepalive`: Kalp atışı aralığı (varsayılan 240 saniye).
+- `publish_topic`: Yayın konusu.
 
-### 6.2 音频参数
+### 6.2 Ses Parametreleri
 
-- **格式**：Opus
-- **采样率**：16000 Hz（设备端）/ 24000 Hz（服务器端）
-- **声道数**：1（单声道）
-- **帧时长**：60ms
-
----
-
-## 7. 错误处理与重连
-
-### 7.1 MQTT 重连机制
-
-- 连接失败时自动重试
-- 支持错误上报控制
-- 断线时触发清理流程
-
-### 7.2 UDP 连接管理
-
-- 连接失败时不自动重试
-- 依赖 MQTT 通道重新协商
-- 支持连接状态查询
-
-### 7.3 超时处理
-
-基类 `Protocol` 提供超时检测：
-- 默认超时时间：120 秒
-- 基于最后接收时间计算
-- 超时时自动标记为不可用
+- **Format**: Opus.
+- **Örnekleme oranı**: 16000 Hz (cihaz tarafı) / 24000 Hz (sunucu tarafı).
+- **Kanal sayısı**: 1 (mono).
+- **Kare süresi**: 60 ms.
 
 ---
 
-## 8. 安全考虑
+## 7. Hata İşleme ve Yeniden Bağlantı
 
-### 8.1 传输加密
+### 7.1 MQTT Yeniden Bağlantı Mekanizması
 
-- **MQTT**：支持 TLS/SSL 加密（端口8883）
-- **UDP**：使用 AES-CTR 加密音频数据
+- Bağlantı başarısız olduğunda otomatik yeniden dener.
+- Hata raporlama kontrolünü destekler.
+- Bağlantı koptuğunda temizlik akışı tetiklenir.
 
-### 8.2 认证机制
+### 7.2 UDP Bağlantı Yönetimi
 
-- **MQTT**：用户名/密码认证
-- **UDP**：通过 MQTT 通道分发密钥
+- Bağlantı başarısız olduğunda otomatik yeniden deneme yapmaz.
+- Yeniden anlaşma için MQTT kanalına bağlıdır.
+- Bağlantı durumu sorgulamayı destekler.
 
-### 8.3 防重放攻击
+### 7.3 Zaman Aşımı İşleme
 
-- 序列号单调递增
-- 拒绝过期数据包
-- 时间戳验证
+Temel `Protocol` sınıfı zaman aşımı denetimi sağlar:
+- Varsayılan zaman aşımı: 120 saniye.
+- Son alma zamanına göre hesaplanır.
+- Zaman aşımında otomatik olarak kullanılamaz işaretlenir.
 
 ---
 
-## 9. 性能优化
+## 8. Güvenlik Notları
 
-### 9.1 并发控制
+### 8.1 Aktarım Şifrelemesi
 
-使用互斥锁保护 UDP 连接：
+- **MQTT**: TLS/SSL şifrelemeyi destekler (port 8883).
+- **UDP**: Ses verisi için AES-CTR şifreleme kullanır.
+
+### 8.2 Kimlik Doğrulama Mekanizması
+
+- **MQTT**: Kullanıcı adı/parola doğrulaması.
+- **UDP**: Anahtarlar MQTT kanalı üzerinden dağıtılır.
+
+### 8.3 Tekrar Saldırısı Koruması
+
+- Sıra numarası tek yönlü artar.
+- Süresi geçmiş paketler reddedilir.
+- Zaman damgası doğrulanır.
+
+---
+
+## 9. Performans İyileştirme
+
+### 9.1 Eşzamanlılık Kontrolü
+
+UDP bağlantısı mutex ile korunur:
 ```cpp
 std::lock_guard<std::mutex> lock(channel_mutex_);
 ```
 
-### 9.2 内存管理
+### 9.2 Bellek Yönetimi
 
-- 动态创建/销毁网络对象
-- 智能指针管理音频数据包
-- 及时释放加密上下文
+- Ağ nesneleri dinamik olarak oluşturulur ve yok edilir.
+- Ses paketleri akıllı işaretçilerle yönetilir.
+- Şifreleme bağlamı zamanında serbest bırakılır.
 
-### 9.3 网络优化
+### 9.3 Ağ İyileştirme
 
-- UDP 连接复用
-- 数据包大小优化
-- 序列号连续性检查
+- UDP bağlantısı yeniden kullanılır.
+- Paket boyutu optimize edilir.
+- Sıra numarası sürekliliği kontrol edilir.
 
 ---
 
-## 10. 与 WebSocket 协议的比较
+## 10. WebSocket Protokolüyle Karşılaştırma
 
-| 特性 | MQTT + UDP | WebSocket |
+| Özellik | MQTT + UDP | WebSocket |
 |------|------------|-----------|
-| 控制通道 | MQTT | WebSocket |
-| 音频通道 | UDP (加密) | WebSocket (二进制) |
-| 实时性 | 高 (UDP) | 中等 |
-| 可靠性 | 中等 | 高 |
-| 复杂度 | 高 | 低 |
-| 加密 | AES-CTR | TLS |
-| 防火墙友好度 | 低 | 高 |
+| Kontrol kanalı | MQTT | WebSocket |
+| Ses kanalı | UDP (şifreli) | WebSocket (binary) |
+| Gerçek zamanlılık | Yüksek (UDP) | Orta |
+| Güvenilirlik | Orta | Yüksek |
+| Karmaşıklık | Yüksek | Düşük |
+| Şifreleme | AES-CTR | TLS |
+| Güvenlik duvarı uyumu | Düşük | Yüksek |
 
 ---
 
-## 11. 部署建议
+## 11. Dağıtım Önerileri
 
-### 11.1 网络环境
+### 11.1 Ağ Ortamı
 
-- 确保 UDP 端口可达
-- 配置防火墙规则
-- 考虑 NAT 穿透
+- UDP portunun erişilebilir olduğundan emin olun.
+- Güvenlik duvarı kurallarını yapılandırın.
+- NAT geçişini değerlendirin.
 
-### 11.2 服务器配置
+### 11.2 Sunucu Yapılandırması
 
-- MQTT Broker 配置
-- UDP 服务器部署
-- 密钥管理系统
+- MQTT Broker yapılandırması.
+- UDP sunucu dağıtımı.
+- Anahtar yönetim sistemi.
 
-### 11.3 监控指标
+### 11.3 İzleme Metrikleri
 
-- 连接成功率
-- 音频传输延迟
-- 数据包丢失率
-- 解密失败率
+- Bağlantı başarı oranı.
+- Ses aktarım gecikmesi.
+- Paket kayıp oranı.
+- Şifre çözme hata oranı.
 
 ---
 
-## 12. 总结
+## 12. Özet
 
-MQTT + UDP 混合协议通过以下设计实现高效的音视频通信：
+MQTT + UDP karma protokolü, verimli ses iletişimini şu tasarımlarla sağlar:
 
-- **分离式架构**：控制与数据通道分离，各司其职
-- **加密保护**：AES-CTR 确保音频数据安全传输
-- **序列化管理**：防止重放攻击和数据乱序
-- **自动恢复**：支持连接断开后的自动重连
-- **性能优化**：UDP 传输保证音频数据的实时性
+- **Ayrılmış mimari**: Kontrol ve veri kanalları ayrı görevler üstlenir.
+- **Şifreleme koruması**: AES-CTR, ses verisinin güvenli aktarımını sağlar.
+- **Sıra yönetimi**: Tekrar saldırılarını ve veri sırası bozulmalarını önler.
+- **Otomatik toparlanma**: Bağlantı kesildikten sonra otomatik yeniden bağlantıyı destekler.
+- **Performans iyileştirmesi**: UDP aktarımı, ses verisinin gerçek zamanlılığını korur.
 
-该协议适用于对实时性要求较高的语音交互场景，但需要在网络复杂度和传输性能之间做出权衡。 
+Bu protokol, gerçek zamanlılık ihtiyacı yüksek sesli etkileşim senaryolarına uygundur; ancak ağ karmaşıklığı ile aktarım performansı arasında dikkatli bir denge kurulmalıdır.

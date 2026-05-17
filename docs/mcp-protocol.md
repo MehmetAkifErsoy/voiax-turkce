@@ -1,14 +1,14 @@
-# MCP (Model Context Protocol) 交互流程
+# MCP (Model Context Protocol) Etkileşim Akışı
 
-NOTICE: AI 辅助生成, 在实现后台服务时, 请参照代码确认细节!!
+NOT: AI desteğiyle oluşturulmuştur. Arka uç servisi uygulanırken ayrıntıları koddan doğrulayın.
 
-本项目中的 MCP 协议用于后台 API（MCP 客户端）与 ESP32 设备（MCP 服务器）之间的通信，以便后台能够发现和调用设备提供的功能（工具）。
+Bu projede MCP protokolü, arka uç API'si (MCP istemcisi) ile ESP32 cihazı (MCP sunucusu) arasındaki iletişim için kullanılır. Böylece arka uç, cihazın sunduğu özellikleri (araçları) keşfedebilir ve çağırabilir.
 
-## 协议格式
+## Protokol Formatı
 
-根据代码 (`main/protocols/protocol.cc`, `main/mcp_server.cc`)，MCP 消息是封装在基础通信协议（如 WebSocket 或 MQTT）的消息体中的。其内部结构遵循 [JSON-RPC 2.0](https://www.jsonrpc.org/specification) 规范。
+Koda göre (`main/protocols/protocol.cc`, `main/mcp_server.cc`), MCP mesajları WebSocket veya MQTT gibi temel iletişim protokollerinin mesaj gövdesi içinde taşınır. İç yapı [JSON-RPC 2.0](https://www.jsonrpc.org/specification) standardını izler.
 
-整体消息结构示例：
+Genel mesaj yapısı örneği:
 
 ```json
 {
@@ -25,25 +25,25 @@ NOTICE: AI 辅助生成, 在实现后台服务时, 请参照代码确认细节!!
 }
 ```
 
-其中，`payload` 部分是标准的 JSON-RPC 2.0 消息：
+`payload` alanı standart bir JSON-RPC 2.0 mesajıdır:
 
-- `jsonrpc`: 固定的字符串 "2.0"。
-- `method`: 要调用的方法名称 (对于 Request)。
-- `params`: 方法的参数，一个结构化值，通常为对象 (对于 Request)。
-- `id`: 请求的标识符，客户端发送请求时提供，服务器响应时原样返回。用于匹配请求和响应。
-- `result`: 方法成功执行时的结果 (对于 Success Response)。
-- `error`: 方法执行失败时的错误信息 (对于 Error Response)。
+- `jsonrpc`: Sabit `"2.0"` değeri.
+- `method`: Çağrılacak yöntem adı (Request için).
+- `params`: Yöntem parametreleri; genellikle nesne biçiminde yapılandırılmış bir değer (Request için).
+- `id`: İstek kimliği. İstemci gönderir, sunucu yanıtta aynı değeri döndürür; istek ve yanıtı eşleştirmek için kullanılır.
+- `result`: Yöntem başarılı çalıştığında dönen sonuç (Success Response için).
+- `error`: Yöntem başarısız olduğunda dönen hata bilgisi (Error Response için).
 
-## 交互流程及发送时机
+## Etkileşim Akışı ve Gönderim Zamanı
 
-MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“工具”（Tool）进行。
+MCP etkileşimi temelde istemcinin (arka uç API'si) cihaz üzerindeki araçları keşfetmesi ve çağırması üzerine kuruludur.
 
-1.  **连接建立与能力通告**
+1.  **Bağlantı Kurulumu ve Yetenek Bildirimi**
 
-    - **时机：** 设备启动并成功连接到后台 API 后。
-    - **发送方：** 设备。
-    - **消息：** 设备发送基础协议的 "hello" 消息给后台 API，消息中包含设备支持的能力列表，例如通过支持 MCP 协议 (`"mcp": true`)。
-    - **示例 (非 MCP 负载，而是基础协议消息):**
+    - **Zaman:** Cihaz başlatılıp arka uç API'sine başarıyla bağlandıktan sonra.
+    - **Gönderen:** Cihaz.
+    - **Mesaj:** Cihaz, temel protokolün `"hello"` mesajını arka uç API'sine gönderir. Mesajda cihazın desteklediği yetenekler yer alır; örneğin MCP desteği için `"mcp": true`.
+    - **Örnek (MCP payload değil, temel protokol mesajıdır):**
       ```json
       {
         "type": "hello",
@@ -58,12 +58,12 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
       }
       ```
 
-2.  **初始化 MCP 会话**
+2.  **MCP Oturumunu Başlatma**
 
-    - **时机：** 后台 API 收到设备 "hello" 消息，确认设备支持 MCP 后，通常作为 MCP 会话的第一个请求发送。
-    - **发送方：** 后台 API (客户端)。
-    - **方法：** `initialize`
-    - **消息 (MCP payload):**
+    - **Zaman:** Arka uç API'si cihazdan `"hello"` mesajını alıp cihazın MCP desteklediğini doğruladıktan sonra. Genellikle MCP oturumunun ilk isteği olarak gönderilir.
+    - **Gönderen:** Arka uç API'si (istemci).
+    - **Yöntem:** `initialize`
+    - **Mesaj (MCP payload):**
 
       ```json
       {
@@ -86,8 +86,8 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
       }
       ```
 
-    - **设备响应时机：** 设备收到 `initialize` 请求并处理后。
-    - **设备响应消息 (MCP payload):**
+    - **Cihazın yanıt zamanı:** Cihaz `initialize` isteğini alıp işledikten sonra.
+    - **Cihaz yanıtı (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -105,12 +105,12 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
       }
       ```
 
-3.  **发现设备工具列表**
+3.  **Cihaz Araç Listesini Keşfetme**
 
-    - **时机：** 后台 API 需要获取设备当前支持的具体功能（工具）列表及其调用方式时。
-    - **发送方：** 后台 API (客户端)。
-    - **方法：** `tools/list`
-    - **消息 (MCP payload):**
+    - **Zaman:** Arka uç API'si cihazın o anda desteklediği özelliklerin (araçların) listesini ve çağrı biçimini almak istediğinde.
+    - **Gönderen:** Arka uç API'si (istemci).
+    - **Yöntem:** `tools/list`
+    - **Mesaj (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -121,8 +121,8 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
         "id": 2 // 请求 ID
       }
       ```
-    - **设备响应时机：** 设备收到 `tools/list` 请求并生成工具列表后。
-    - **设备响应消息 (MCP payload):**
+    - **Cihazın yanıt zamanı:** Cihaz `tools/list` isteğini alıp araç listesini oluşturduktan sonra.
+    - **Cihaz yanıtı (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -145,14 +145,14 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
         }
       }
       ```
-    - **分页处理：** 如果 `nextCursor` 字段非空，客户端需要再次发送 `tools/list` 请求，并在 `params` 中带上这个 `cursor` 值以获取下一页工具。
+    - **Sayfalama:** `nextCursor` alanı boş değilse istemci yeniden `tools/list` isteği gönderir ve sonraki araç sayfasını almak için `params` içinde bu `cursor` değerini taşır.
 
-4.  **调用设备工具**
+4.  **Cihaz Aracını Çağırma**
 
-    - **时机：** 后台 API 需要执行设备上的某个具体功能时。
-    - **发送方：** 后台 API (客户端)。
-    - **方法：** `tools/call`
-    - **消息 (MCP payload):**
+    - **Zaman:** Arka uç API'si cihaz üzerindeki belirli bir özelliği çalıştırmak istediğinde.
+    - **Gönderen:** Arka uç API'si (istemci).
+    - **Yöntem:** `tools/call`
+    - **Mesaj (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -167,8 +167,8 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
         "id": 3 // 请求 ID
       }
       ```
-    - **设备响应时机：** 设备收到 `tools/call` 请求，执行相应的工具函数后。
-    - **设备成功响应消息 (MCP payload):**
+    - **Cihazın yanıt zamanı:** Cihaz `tools/call` isteğini alıp ilgili araç fonksiyonunu çalıştırdıktan sonra.
+    - **Başarılı cihaz yanıtı (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -182,7 +182,7 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
         }
       }
       ```
-    - **设备失败响应消息 (MCP payload):**
+    - **Başarısız cihaz yanıtı (MCP payload):**
       ```json
       {
         "jsonrpc": "2.0",
@@ -194,11 +194,11 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
       }
       ```
 
-5.  **设备主动发送消息 (Notifications)**
-    - **时机：** 设备内部发生需要通知后台 API 的事件时（例如，状态变化，虽然代码示例中没有明确的工具发送此类消息，但 `Application::SendMcpMessage` 的存在暗示了设备可能主动发送 MCP 消息）。
-    - **发送方：** 设备 (服务器)。
-    - **方法：** 可能是以 `notifications/` 开头的方法名，或者其他自定义方法。
-    - **消息 (MCP payload):** 遵循 JSON-RPC Notification 格式，没有 `id` 字段。
+5.  **Cihazın Kendiliğinden Mesaj Göndermesi (Notifications)**
+    - **Zaman:** Cihaz içinde arka uç API'sine bildirilmesi gereken bir olay oluştuğunda. Örneğin durum değişimi. Kod örneğinde bu tür mesaj gönderen belirgin bir araç olmasa da `Application::SendMcpMessage`, cihazın MCP mesajlarını kendiliğinden gönderebileceğini gösterir.
+    - **Gönderen:** Cihaz (sunucu).
+    - **Yöntem:** `notifications/` ile başlayan bir yöntem adı veya başka bir özel yöntem olabilir.
+    - **Mesaj (MCP payload):** JSON-RPC Notification biçimini izler ve `id` alanı içermez.
       ```json
       {
         "jsonrpc": "2.0",
@@ -210,11 +210,11 @@ MCP 的交互主要围绕客户端（后台 API）发现和调用设备上的“
         // 没有 id 字段
       }
       ```
-    - **后台 API 处理：** 接收到 Notification 后，后台 API 进行相应的处理，但不回复。
+    - **Arka uç API işlemi:** Notification alındıktan sonra arka uç API ilgili işlemi yapar, ancak yanıt göndermez.
 
-## 交互图
+## Etkileşim Diyagramı
 
-下面是一个简化的交互序列图，展示了主要的 MCP 消息流程：
+Aşağıdaki sadeleştirilmiş sıra diyagramı temel MCP mesaj akışını gösterir:
 
 ```mermaid
 sequenceDiagram
@@ -266,4 +266,4 @@ sequenceDiagram
     end
 ```
 
-这份文档概述了该项目中 MCP 协议的主要交互流程。具体的参数细节和工具功能需要参考 `main/mcp_server.cc` 中 `McpServer::AddCommonTools` 以及各个工具的实现。
+Bu belge, projedeki MCP protokolünün temel etkileşim akışını özetler. Parametre ayrıntıları ve araç işlevleri için `main/mcp_server.cc` içindeki `McpServer::AddCommonTools` ve her aracın gerçek uygulaması referans alınmalıdır.

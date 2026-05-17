@@ -9,8 +9,8 @@
             margin-left: 11px;
             gap: 10px;
           ">
-          <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" style="width: 42px; height: 42px" />
-          <img loading="lazy" alt="" :src="xiaozhiAiIcon" style="height: 20px" />
+          <img loading="lazy" alt="VoiaX" src="@/assets/xiaozhi-logo.png" style="width: 42px; height: 42px" />
+          <span style="font-size: 22px; font-weight: 700; color: #2b334d; letter-spacing: 0;">VoiaX</span>
         </div>
       </el-header>
       <div class="login-person">
@@ -26,9 +26,8 @@
               padding: 0 30px;
             ">
             <img loading="lazy" alt="" src="@/assets/login/hi.png" style="width: 34px; height: 34px" />
-            <div class="login-text" style="font-size: 24px; font-weight: bold; color: #2b334d;">VoiaX Sistemine Hoş Geldiniz</div>
+            <div class="login-text" style="font-size: 24px; font-weight: bold; color: #2b334d;">VoiaX'e Hoş Geldiniz</div>
 
-            <!-- 语言切换下拉菜单 -->
             <el-dropdown trigger="click" class="title-language-dropdown"
               @visible-change="handleLanguageDropdownVisibleChange">
               <span class="el-dropdown-link">
@@ -36,24 +35,6 @@
                 <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': languageDropdownVisible }"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="changeLanguage('zh_CN')">
-                  {{ $t("language.zhCN") }}
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="changeLanguage('zh_TW')">
-                  {{ $t("language.zhTW") }}
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="changeLanguage('en')">
-                  {{ $t("language.en") }}
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="changeLanguage('de')">
-                  {{ $t("language.de") }}
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="changeLanguage('vi')">
-                  {{ $t("language.vi") }}
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="changeLanguage('pt_BR')">
-                  {{ $t("language.ptBR") }}
-                </el-dropdown-item>
                 <el-dropdown-item @click.native="changeLanguage('tr')">
                   {{ $t("language.tr") }}
                 </el-dropdown-item>
@@ -178,25 +159,7 @@ export default {
     },
     // 获取当前语言显示文本
     currentLanguageText() {
-      const currentLang = this.currentLanguage;
-      switch (currentLang) {
-        case "zh_CN":
-          return this.$t("language.zhCN");
-        case "zh_TW":
-          return this.$t("language.zhTW");
-        case "en":
-          return this.$t("language.en");
-        case "de":
-          return this.$t("language.de");
-        case "vi":
-          return this.$t("language.vi");
-        case "pt_BR":
-          return this.$t("language.ptBR");
-        case "tr":
-          return this.$t("language.tr");
-        default:
-          return this.$t("language.tr");
-      }
+      return this.$t("language.tr");
     },
     // 根据当前语言获取对应的xiaozhi-ai图标
     xiaozhiAiIcon() {
@@ -245,8 +208,8 @@ export default {
   },
   methods: {
     openPage(url) {
-      const lang = this.$i18n ? this.$i18n.locale : 'zh_CN';
-      if (!lang.startsWith('zh')) {
+      const lang = this.$i18n ? this.$i18n.locale : 'tr';
+      if (!lang.startsWith('zh') && lang !== 'tr') {
         url = url.replace('.html', '-en.html');
       }
       window.open(url, '_blank');
@@ -266,7 +229,7 @@ export default {
             const blob = new Blob([res.data], { type: res.data.type });
             this.captchaUrl = URL.createObjectURL(blob);
           } else {
-            showDanger("验证码加载失败，点击刷新");
+            showDanger("Doğrulama kodu yüklenemedi, yenilemek için tıklayın");
           }
         });
       }
@@ -313,7 +276,7 @@ export default {
           this.$store.commit("setUserInfo", data.data);
           goToPage("/home");
         } else {
-          showDanger("用户信息获取失败");
+          showDanger("Kullanıcı bilgileri alınamadı");
         }
       });
     },
@@ -349,7 +312,7 @@ export default {
         const captchaAndPassword = this.form.captcha + this.form.password;
         encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
       } catch (error) {
-        console.error("密码加密失败:", error);
+        console.error("Şifre şifrelenemedi:", error);
         showDanger(this.$t('sm2.encryptionFailed'));
         return;
       }
@@ -374,7 +337,7 @@ export default {
         },
         (err) => {
           // 直接使用后端返回的国际化消息
-          let errorMessage = err.data.msg || "登录失败";
+          let errorMessage = err.data.msg || "Giriş başarısız";
 
           showDanger(errorMessage);
         }
