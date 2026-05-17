@@ -181,6 +181,7 @@ uploadfile
  
 !package.json
 !**/package.json
+!main/manager-web/package-lock.json
 
 # Do not ignore json files inside manager-mobile; keep env files local only.
 !main/manager-mobile/**/env/
