@@ -585,6 +585,17 @@ LLM:
     max_tokens: 500   # 最大生成token数
     top_p: 1
     frequency_penalty: 0  # 频率惩罚
+  GitHubModelsLLM:
+    # 定义LLM API类型
+    type: openai
+    # GitHub Models使用OpenAI兼容接口，需要具备models:read权限的GitHub Token
+    # 免费API用量有速率限制，模型ID请以GitHub Models目录为准
+    base_url: https://models.github.ai/inference
+    model_name: openai/gpt-4.1
+    api_key: 你的GitHub models:read token
+    temperature: 0.7
+    max_tokens: 500
+    top_p: 1
   AliAppLLM:
     # 定义LLM API类型
     type: AliBL

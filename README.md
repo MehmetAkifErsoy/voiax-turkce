@@ -61,6 +61,8 @@ Canlı kurulumlarda secret değerleri `data/.config.yaml`, environment variable 
 
 GitHub Models veya Azure inference benzeri OpenAI uyumlu sağlayıcılar için panelde model tipi `LLM`, provider/type `openai`, `base_url`, `model_name` ve `api_key` alanları yapılandırılır. `model_name` sağlayıcının beklediği tam model adı olmalıdır.
 
+GitHub Models için hazır `GitHub Models` LLM kaydı eklenmiştir. Kullanımda `base_url` değeri `https://models.github.ai/inference`, örnek `model_name` değeri `openai/gpt-4.1` olmalı; `api_key` alanına `models:read` yetkili GitHub token girilmelidir. Bu entegrasyon `xiaozhi.me` resmi cloud model proxy'sini kullanmaz; GitHub'ın ücretsiz API deneme kotaları ve rate limitleri geçerlidir.
+
 ## Geliştirici Dokümanları
 
 - [MCP IoT Kullanımı](docs/mcp-usage.md)
