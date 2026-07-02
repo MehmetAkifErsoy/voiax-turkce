@@ -7,7 +7,7 @@ import os
 import re
 import glob
 from typing import Dict, List, Tuple
-from aiohttp import web
+from aiohttp import web, ClientSession, ClientTimeout
 
 from core.auth import AuthManager
 from core.utils.util import get_local_ip, get_vision_url
@@ -140,6 +140,108 @@ class OTAHandler(BaseHandler):
         else:
             return f"ws://{local_ip}:{port}/xiaozhi/v1/"
 
+    def _get_manager_api_url(self, path: str) -> str:
+        manager_config = self.config.get("manager-api") or {}
+        base_url = (manager_config.get("url") or "").strip()
+        if not base_url:
+            return ""
+        return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
+
+    def _copy_ota_headers(self, request) -> dict:
+        headers = {}
+        for name in (
+            "Device-Id",
+            "Client-Id",
+            "Activation-Version",
+            "Serial-Number",
+            "User-Agent",
+            "Accept-Language",
+            "Content-Type",
+        ):
+            value = request.headers.get(name)
+            if value:
+                headers[name] = value
+
+        headers.setdefault("Content-Type", "application/json")
+
+        manager_config = self.config.get("manager-api") or {}
+        secret = (manager_config.get("secret") or "").strip()
+        if secret and "你" not in secret:
+            headers.setdefault("Authorization", f"Bearer {secret}")
+
+        return headers
+
+    async def _request_manager_ota(self, path: str, request, data: str):
+        url = self._get_manager_api_url(path)
+        if not url:
+            return None
+
+        timeout = ClientTimeout(total=8)
+        try:
+            async with ClientSession(timeout=timeout) as session:
+                async with session.post(
+                    url, data=data, headers=self._copy_ota_headers(request)
+                ) as resp:
+                    text = await resp.text()
+                    content_type = resp.headers.get("Content-Type", "text/plain")
+                    return resp.status, text, content_type
+        except Exception as e:
+            self.logger.bind(tag=TAG).warning(
+                f"请求manager-api OTA失败: path={path}, error={e}"
+            )
+            return None
+
+    async def _fetch_manager_ota_json(self, request, data: str) -> dict:
+        result = await self._request_manager_ota("ota/", request, data)
+        if result is None:
+            return {}
+
+        status, text, _ = result
+        if status != 200:
+            self.logger.bind(tag=TAG).warning(
+                f"manager-api OTA返回非200状态: status={status}, body={text[:200]}"
+            )
+            return {}
+
+        try:
+            manager_json = json.loads(text) if text else {}
+            if isinstance(manager_json, dict):
+                return manager_json
+        except Exception as e:
+            self.logger.bind(tag=TAG).warning(
+                f"manager-api OTA响应不是有效JSON: error={e}, body={text[:200]}"
+            )
+        return {}
+
+    def _merge_manager_ota_json(self, return_json: dict, manager_json: dict):
+        if not isinstance(manager_json, dict):
+            return
+
+        for key in ("server_time", "activation"):
+            value = manager_json.get(key)
+            if isinstance(value, dict):
+                return_json[key] = value
+
+        firmware = manager_json.get("firmware")
+        if isinstance(firmware, dict):
+            return_json.setdefault("firmware", {})
+            for key in ("version", "url", "force"):
+                if key in firmware and firmware[key] is not None:
+                    return_json["firmware"][key] = firmware[key]
+
+        if "mqtt" not in return_json and isinstance(manager_json.get("mqtt"), dict):
+            return_json["mqtt"] = manager_json["mqtt"]
+
+        if (
+            "mqtt" not in return_json
+            and "websocket" not in return_json
+            and isinstance(manager_json.get("websocket"), dict)
+        ):
+            return_json["websocket"] = manager_json["websocket"]
+
+        if "error" in manager_json and "error" not in return_json:
+            return_json["error"] = manager_json["error"]
+
     async def handle_post(self, request):
         """处理 OTA POST 请求
 
@@ -172,6 +274,8 @@ class OTAHandler(BaseHandler):
                 data_json = json.loads(data) if data else {}
             except Exception:
                 data_json = {}
+
+            manager_ota_json = await self._fetch_manager_ota_json(request, data)
 
             server_config = self.config["server"]
             # Distinguish ports:
@@ -297,6 +401,8 @@ class OTAHandler(BaseHandler):
                     f"未配置MQTT网关，为设备 {device_id} 下发WebSocket配置"
                 )
 
+            self._merge_manager_ota_json(return_json, manager_ota_json)
+
             # Now check firmware files for updates
             try:
                 self._refresh_bin_cache_if_needed()
@@ -348,6 +454,27 @@ class OTAHandler(BaseHandler):
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",
             )
+        finally:
+            self._add_cors_headers(response)
+            return response
+
+    async def handle_activate(self, request):
+        """代理设备激活状态检查到manager-api。"""
+        try:
+            data = await request.text()
+            result = await self._request_manager_ota("ota/activate", request, data)
+            if result is None:
+                response = web.Response(status=202)
+            else:
+                status, text, content_type = result
+                response = web.Response(
+                    status=status,
+                    text=text,
+                    content_type=content_type.split(";")[0] or "text/plain",
+                )
+        except Exception as e:
+            self.logger.bind(tag=TAG).error(f"OTA activate处理异常: {e}")
+            response = web.Response(status=202)
         finally:
             self._add_cors_headers(response)
             return response
