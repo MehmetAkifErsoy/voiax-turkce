@@ -69,16 +69,30 @@ async def get_config_from_api_async(config):
         "secret": config["manager-api"].get("secret", ""),
     }
     auth_enabled = config_data.get("server", {}).get("auth", {}).get("enabled", False)
-    # server的配置以本地为准
+    # server的监听/公网地址配置以本地为准, but keep API-provided
+    # MQTT/UDP OTA fields.
     if config.get("server"):
+        api_server_config = config_data.get("server", {}) or {}
+        local_server_config = config.get("server", {}) or {}
         config_data["server"] = {
-            "ip": config["server"].get("ip", ""),
-            "port": config["server"].get("port", ""),
-            "http_port": config["server"].get("http_port", ""),
-            "vision_explain": config["server"].get("vision_explain", ""),
-            "auth_key": config["server"].get("auth_key", ""),
-            "websocket": config["server"].get("websocket", ""),
+            "ip": local_server_config.get("ip", ""),
+            "port": local_server_config.get("port", ""),
+            "http_port": local_server_config.get("http_port", ""),
+            "vision_explain": local_server_config.get("vision_explain", ""),
+            "auth_key": local_server_config.get("auth_key", ""),
+            "websocket": local_server_config.get("websocket", ""),
         }
+        for key in (
+            "timezone_offset",
+            "mqtt_gateway",
+            "mqtt_signature_key",
+            "udp_gateway",
+        ):
+            api_value = api_server_config.get(key)
+            local_value = local_server_config.get(key)
+            value = api_value if api_value not in (None, "", "null") else local_value
+            if value is not None:
+                config_data["server"][key] = value
     config_data["server"]["auth"] = {"enabled": auth_enabled}
     # 如果服务器没有prompt_template，则从本地配置读取
     if not config_data.get("prompt_template"):
